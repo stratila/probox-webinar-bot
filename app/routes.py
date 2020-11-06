@@ -53,11 +53,18 @@ def index():
 @app.route("/webinar-data", methods=["GET"])
 @login_required
 def get_tg_users_excel():
-    query_sets = TelegramUser.query.all()
-    column_names = ['id', 'first_name', 'last_name', 'username', 'language_code', 'phone_number', 'course']
-    return excel.make_response_from_query_sets(
-        query_sets, column_names, "xlsx", dest_sheet_name="webinar-participants"
-    )
+    try:
+        query_sets = TelegramUser.query.all()
+        column_names = ['id', 'first_name', 'last_name', 'username', 'language_code', 'phone_number', 'course']
+        return excel.make_response_from_query_sets(
+            query_sets, column_names, "xlsx", dest_sheet_name="webinar-participants"
+        )
+    except Exception as e:
+        form = SendForm()
+        users_count = db.session.query(func.count(TelegramUser.id)).scalar()
+        flash('0 пользователей в телеграм-боте')
+        return render_template('index.html', title='Home Page', form=form, users_count=users_count)
+
 
 
 @app.route('/login', methods=['GET', 'POST'])
