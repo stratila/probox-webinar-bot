@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+
+	<div class="alert alert-success" role="alert">
+		<h4 class="alert-heading">Hello, {{current_user.username}}!</h4>
+		<p>Всего пользователей бота: {{ users_count }}</p>
+		<hr>
+		<p class="mb-0">Отправить сообщение всем пользователям можно на этой страничке.</p>
+	</div>
+
+	<div class="row">
+			<div class="col-md-4">
+				{{ wtf.quick_form(form) }}
+			</div>
+	</div>
+
+{% endblock %}
+	
