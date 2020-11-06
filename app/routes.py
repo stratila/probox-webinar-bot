@@ -62,7 +62,7 @@ def get_tg_users_excel():
         )
     except Exception as e:
         flash('0 пользователей в телеграм-боте')
-        return redirect(url_for(index))
+        return redirect(url_for('index'))
 
 
 
