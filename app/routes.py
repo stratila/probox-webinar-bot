@@ -27,6 +27,7 @@ def webhook():
     telegram_bot.set_webhook(url='https://probox-webinar-bot.herokuapp.com/' + app.config['BOT_TOKEN'])
     return "!", 200
 
+
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 @login_required
@@ -60,10 +61,8 @@ def get_tg_users_excel():
             query_sets, column_names, "xlsx", dest_sheet_name="webinar-participants"
         )
     except Exception as e:
-        form = SendForm()
-        users_count = db.session.query(func.count(TelegramUser.id)).scalar()
         flash('0 пользователей в телеграм-боте')
-        return render_template('index.html', title='Home Page', form=form, users_count=users_count)
+        return redirect(url_for(index))
 
 
 
