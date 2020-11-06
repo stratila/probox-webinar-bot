@@ -15,6 +15,18 @@ import time
 import json
 
 
+@app.route('/' + app.config['BOT_TOKEN'], methods=['POST'])
+def getMessage():
+    telegram_bot.process_new_updates([types.Update.de_json(request.stream.read().decode("utf-8"))])
+    return "!", 200
+
+
+@app.route("/set_webhook")
+def webhook():
+    telegram_bot.remove_webhook()
+    telegram_bot.set_webhook(url='https://probox-webinar-bot.herokuapp.com/' + app.config['BOT_TOKEN'])
+    return "!", 200
+
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 @login_required
