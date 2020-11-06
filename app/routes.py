@@ -162,7 +162,7 @@ def send_or_update_course_option(chat_id, message_id=None, update=False):
 
 def request_course_option(chat_id, wait=False):
     if wait:
-        time.sleep(7) #ждать 7 секунд
+        time.sleep(15) #ждать 15 секунд
 
     user = TelegramUser.query.get(chat_id)
     user.state = BotSate.COURSE_CHOICE
