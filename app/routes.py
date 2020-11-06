@@ -202,7 +202,10 @@ def request_course(course, chat_id, message_id=None, update=False,):
 
 @telegram_bot.message_handler(commands=['start'])
 def auth_telegram_user(message):
-    if TelegramUser.query.filter_by(id=message.from_user.id).first():
+    u = TelegramUser.query.filter_by(id=message.from_user.id).first();
+    if u:
+        u.state = BotSate.START
+        db.session.commit()
         check_state(message)
     else:
         user = TelegramUser(id=message.from_user.id,
