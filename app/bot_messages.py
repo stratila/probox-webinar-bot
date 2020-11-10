@@ -43,3 +43,5 @@ python_link = '💻 *Python*: [кликни по этой ссылке](https://
 house/python/)'
 
 javascript_link = '🖥 *JavaScript*: [кликни по этой ссылке](https://probox.robo.house/javascript-pro/)'
+
+autonomous_link = '⚙️ *Автономное обучение в IT* ➡️ [переходи по этой ссылке](https://probox.robo.house/)'

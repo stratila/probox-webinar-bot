@@ -7,7 +7,7 @@ from app.models import User, TelegramUser
 from app.bot_state import BotSate, Course
 from app.bot_messages import start_message, request_phone_number_text, phone_decline_button_text, phone_button_text,\
     registration_start_message, course_choice_message, smart_house_message, python_message, javascript_message, \
-    smart_house_link, javascript_link, python_link
+    smart_house_link, javascript_link, python_link, autonomous_link
 from sqlalchemy import func
 from telebot import types
 import threading
@@ -65,7 +65,6 @@ def get_tg_users_excel():
         return redirect(url_for('index'))
 
 
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -120,13 +119,11 @@ def send_message_to_all_telegram_users(users, message):
     # end = time.time()
 
 
-
-
-
-
 def request_start(chat_id):
+    photo = open('app/static/py-pic.jpg', 'rb')
     markup = types.InlineKeyboardMarkup()
     markup.add(types.InlineKeyboardButton(text='Старт', callback_data=json.dumps({'strt': True})))
+    telegram_bot.send_photo(chat_id, photo)
     telegram_bot.send_message(chat_id=chat_id,
                               text=start_message,
                               reply_markup=markup,
@@ -162,7 +159,7 @@ def send_or_update_course_option(chat_id, message_id=None, update=False):
 
 def request_course_option(chat_id, wait=False):
     if wait:
-        time.sleep(15) #ждать 15 секунд
+        time.sleep(10) #ждать 15 секунд
 
     user = TelegramUser.query.get(chat_id)
     user.state = BotSate.COURSE_CHOICE
@@ -179,11 +176,12 @@ def request_course(course, chat_id, message_id=None, update=False,):
 
     markup.add(types.InlineKeyboardButton(text='Хочешь записаться на пробный урок?',
                                           callback_data=json.dumps({'prb': course})))
-    markup.add(types.InlineKeyboardButton(text='Скачать топ языков программирования',
+    markup.add(types.InlineKeyboardButton(text='ТОП 12 самых оплачиваемых языков программирования',
                                           callback_data=json.dumps({'dwnl': True})))
+    markup.add(types.InlineKeyboardButton(text='Автономное обучение в IT',
+                                          callback_data=json.dumps({'aut': True})))
     markup.add(types.InlineKeyboardButton(text='🔙',
                                           callback_data=json.dumps({'prb': 'back'})))
-
 
     if course == Course.SMART_HOUSE:
         message_text = smart_house_message
@@ -301,6 +299,8 @@ def course_link(query):
         telegram_bot.send_message(user.id, text=smart_house_link, disable_web_page_preview=True,
                                   parse_mode='Markdown')
     elif course == Course.PYTHON:
+        photo = open('app/static/py-pic.jpg', 'rb')
+        telegram_bot.send_photo(user.id, photo)
         telegram_bot.send_message(user.id, text=python_link, disable_web_page_preview=True,
                                   parse_mode='Markdown')
     elif course == Course.JAVASCRIPT:
@@ -309,9 +309,15 @@ def course_link(query):
 
 
 @telegram_bot.callback_query_handler(func=lambda query: json.loads(query.data).get('dwnl') is not None)
-def send_useful_file(query):
+def send_useful_file(query): # тут будет сообщение ссылка
     user = TelegramUser.query.get(query.message.chat.id)
     doc = open('app/static/top_programming_languages.pdf', 'rb')
     telegram_bot.send_document(user.id, doc)
 
 
+@telegram_bot.callback_query_handler(func=lambda query: json.loads(query.data).get('aut') is not None)
+def send_autonomous_link(query):
+    chat_id = query.message.chat.id
+    photo = open('app/static/aut-pic.jpg', 'rb')
+    telegram_bot.send_photo(chat_id, photo)
+    telegram_bot.send_message(chat_id, text=autonomous_link, parse_mode='Markdown')
