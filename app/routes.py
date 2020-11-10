@@ -120,7 +120,7 @@ def send_message_to_all_telegram_users(users, message):
 
 
 def request_start(chat_id):
-    photo = open('app/static/py-pic.jpg', 'rb')
+    photo = open('app/static/start-pic.jpg', 'rb')
     markup = types.InlineKeyboardMarkup()
     markup.add(types.InlineKeyboardButton(text='Старт', callback_data=json.dumps({'strt': True})))
     telegram_bot.send_photo(chat_id, photo)
