@@ -150,8 +150,11 @@ def send_or_update_course_option(chat_id, message_id=None, update=False):
     markup.add(types.InlineKeyboardButton(text='Python Джедай', callback_data=json.dumps({'crs': Course.PYTHON})))
     # markup.add(types.InlineKeyboardButton(text='JavaScript', callback_data=json.dumps({'crs': Course.JAVASCRIPT})))
     if update:
-        telegram_bot.edit_message_text(chat_id=chat_id, text=course_choice_message,
-                                       reply_markup=markup, parse_mode='Markdown', message_id=message_id)
+        telegram_bot.delete_message(chat_id=chat_id, message_id=message_id)
+        telegram_bot.send_message(chat_id=chat_id, text=course_choice_message,
+                                  reply_markup=markup, parse_mode='Markdown')
+       # telegram_bot.edit_message_text(chat_id=chat_id, text=course_choice_message,
+       #                                reply_markup=markup, parse_mode='Markdown', message_id=message_id)
     else:
         telegram_bot.send_message(chat_id=chat_id, text=course_choice_message,
                                   reply_markup=markup, parse_mode='Markdown')
