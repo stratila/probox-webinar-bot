@@ -148,7 +148,7 @@ def send_or_update_course_option(chat_id, message_id=None, update=False):
     markup.add(types.InlineKeyboardButton(text='Умный дом на Arduino С++',
                                           callback_data=json.dumps({'crs': Course.SMART_HOUSE})))
     markup.add(types.InlineKeyboardButton(text='Python Джедай', callback_data=json.dumps({'crs': Course.PYTHON})))
-    #markup.add(types.InlineKeyboardButton(text='JavaScript', callback_data=json.dumps({'crs': Course.JAVASCRIPT})))
+    # markup.add(types.InlineKeyboardButton(text='JavaScript', callback_data=json.dumps({'crs': Course.JAVASCRIPT})))
     if update:
         telegram_bot.edit_message_text(chat_id=chat_id, text=course_choice_message,
                                        reply_markup=markup, parse_mode='Markdown', message_id=message_id)
@@ -194,12 +194,12 @@ def request_course(course, chat_id, message_id=None, update=False,):
 
     if update:
         telegram_bot.delete_message(chat_id, message_id)
-        telegram_bot.send_photo(caption=message_text, chat_id=chat_id, disable_web_page_preview=True,
+        telegram_bot.send_photo(caption=message_text, chat_id=chat_id,
                                 parse_mode='Markdown', reply_markup=markup, photo=photo)
         #telegram_bot.edit_message_text(text=message_text, chat_id=chat_id, reply_markup=markup,
         #                               message_id=message_id, disable_web_page_preview=True, parse_mode='Markdown')
     else:
-        telegram_bot.send_photo(caption=message_text, chat_id=chat_id, disable_web_page_preview=True,
+        telegram_bot.send_photo(caption=message_text, chat_id=chat_id,
                                 parse_mode='Markdown', reply_markup=markup, photo=photo)
 
 
@@ -304,8 +304,6 @@ def course_link(query):
         telegram_bot.send_message(user.id, text=smart_house_link, disable_web_page_preview=True,
                                   parse_mode='Markdown')
     elif course == Course.PYTHON:
-        photo = open('app/static/py-pic.jpg', 'rb')
-        telegram_bot.send_photo(user.id, photo)
         telegram_bot.send_message(user.id, text=python_link, disable_web_page_preview=True,
                                   parse_mode='Markdown')
     elif course == Course.JAVASCRIPT:
