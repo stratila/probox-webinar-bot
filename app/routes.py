@@ -320,4 +320,5 @@ def send_autonomous_link(query):
     chat_id = query.message.chat.id
     photo = open('app/static/aut-pic.jpg', 'rb')
     telegram_bot.send_photo(chat_id, photo)
-    telegram_bot.send_message(chat_id, text=autonomous_link, parse_mode='Markdown')
+    telegram_bot.send_message(chat_id, text=autonomous_link, parse_mode='Markdown',
+                              disable_web_page_preview=True)
