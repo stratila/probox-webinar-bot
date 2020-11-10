@@ -148,7 +148,7 @@ def send_or_update_course_option(chat_id, message_id=None, update=False):
     markup.add(types.InlineKeyboardButton(text='Умный дом на Arduino С++',
                                           callback_data=json.dumps({'crs': Course.SMART_HOUSE})))
     markup.add(types.InlineKeyboardButton(text='Python Джедай', callback_data=json.dumps({'crs': Course.PYTHON})))
-    markup.add(types.InlineKeyboardButton(text='JavaScript', callback_data=json.dumps({'crs': Course.JAVASCRIPT})))
+    #markup.add(types.InlineKeyboardButton(text='JavaScript', callback_data=json.dumps({'crs': Course.JAVASCRIPT})))
     if update:
         telegram_bot.edit_message_text(chat_id=chat_id, text=course_choice_message,
                                        reply_markup=markup, parse_mode='Markdown', message_id=message_id)
@@ -184,18 +184,23 @@ def request_course(course, chat_id, message_id=None, update=False,):
                                           callback_data=json.dumps({'prb': 'back'})))
 
     if course == Course.SMART_HOUSE:
+        photo = open('app/static/sh-pic.jpg', 'rb')
         message_text = smart_house_message
     elif course == Course.PYTHON:
+        photo = open('app/static/py-pic.jpg', 'rb')
         message_text = python_message
     elif course == Course.JAVASCRIPT:
         message_text = javascript_message
 
     if update:
-        telegram_bot.edit_message_text(text=message_text, chat_id=chat_id, reply_markup=markup,
-                                       message_id=message_id, disable_web_page_preview=True, parse_mode='Markdown')
+        telegram_bot.delete_message(chat_id, message_id)
+        telegram_bot.send_photo(caption=message_text, chat_id=chat_id, disable_web_page_preview=True,
+                                parse_mode='Markdown', reply_markup=markup, photo=photo)
+        #telegram_bot.edit_message_text(text=message_text, chat_id=chat_id, reply_markup=markup,
+        #                               message_id=message_id, disable_web_page_preview=True, parse_mode='Markdown')
     else:
-        telegram_bot.send_message(text=message_text, chat_id=chat_id, disable_web_page_preview=True,
-                                  parse_mode='Markdown', reply_markup=markup)
+        telegram_bot.send_photo(caption=message_text, chat_id=chat_id, disable_web_page_preview=True,
+                                parse_mode='Markdown', reply_markup=markup, photo=photo)
 
 
 @telegram_bot.message_handler(commands=['start'])
