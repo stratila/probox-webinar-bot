@@ -177,9 +177,9 @@ def request_course(course, chat_id, message_id=None, update=False,):
 
     markup = types.InlineKeyboardMarkup()
 
-    markup.add(types.InlineKeyboardButton(text='Хочешь записаться на пробный урок?',
+    markup.add(types.InlineKeyboardButton(text='Записаться на пробный урок',
                                           callback_data=json.dumps({'prb': course})))
-    markup.add(types.InlineKeyboardButton(text='ТОП 12 самых оплачиваемых языков программирования',
+    markup.add(types.InlineKeyboardButton(text='Читать ТОП 12 самых оплачиваемых языков программирования',
                                           callback_data=json.dumps({'dwnl': True})))
     markup.add(types.InlineKeyboardButton(text='Автономное обучение в IT',
                                           callback_data=json.dumps({'aut': True})))
