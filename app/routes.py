@@ -172,7 +172,7 @@ def request_course_option(chat_id, wait=False):
 
 
 def request_course(course, chat_id, message_id=None, update=False,):
-    if not (course in [Course.SMART_HOUSE, Course.PYTHON, Course.JAVASCRIPT]):
+    if not (course in [Course.SMART_HOUSE, Course.PYTHON, Course.BONUS]):
         raise Exception('Invalid Course was given.')
 
     markup = types.InlineKeyboardMarkup()
