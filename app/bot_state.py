@@ -9,9 +9,11 @@ class BotSate(IntEnum):
     SMART_HOUSE_CHOICE = 5
     PYTHON_CHOICE = 6
     JAVASCRIPT_CHOICE = 7
+    BONUS_CHOICE = 8
 
 
 class Course(IntEnum):
     SMART_HOUSE = 1
     PYTHON = 2
     JAVASCRIPT = 3
+    BONUS = 4

@@ -36,12 +36,18 @@ python_message = '''💻 *Python* -  входит в число самых по�
 javascript_message = '''🖥 *JavaScript* -  входит в число самых популярных языков программирования 2020 года.\
  Ты сможешь научиться...'''
 
-smart_house_link = '''🤖 *Умный дом на Arduino С++*: [кликни по этой ссылке](https://www.robo.house/uk/register/?red=https:\
-//www.robo.house/umnyy-dom/)'''
+smart_house_link = '''🤖 *Умный дом на Arduino С++*
+[Заполни форму](https://www.robo.house/uk/register/?red=https://www.robo.house/umnyy-dom/) и тебе откроется доступ\
+ к личному кабинету с бесплатным пробным уроком.
+➡️[Заполнить форму](https://www.robo.house/uk/register/?red=https://www.robo.house/umnyy-dom/)⬅️'''
 
-python_link = '💻 *Python*: [кликни по этой ссылке](https://www.robo.house/uk/register/?red=https://www.robo.\
-house/python/)'
+python_link = '''💻 *Python* 
+[Заполни форму](https://www.robo.house/uk/register/?red=https://www.robo.house/python/) и тебе откроется доступ\
+ к личному кабинету с бесплатным пробным уроком.
+➡️[Заполнить форму](https://www.robo.house/uk/register/?red=https://www.robo.house/python/)⬅️'''
 
-javascript_link = '🖥 *JavaScript*: [кликни по этой ссылке](https://probox.robo.house/javascript-pro/)'
+javascript_link = '''🖥 *JavaScript*: [кликни по этой ссылке](https://probox.robo.house/javascript-pro/)'''
 
 autonomous_link = '⚙️ *Автономное обучение в IT* ➡️ [переходи по этой ссылке](https://probox.robo.house/)'
+
+bonus_text = '🤩 В качестве бонуса ты получаешь обновлённый рейтинг Топ 12 языков...'

@@ -7,7 +7,7 @@ from app.models import User, TelegramUser
 from app.bot_state import BotSate, Course
 from app.bot_messages import start_message, request_phone_number_text, phone_decline_button_text, phone_button_text,\
     registration_start_message, course_choice_message, smart_house_message, python_message, javascript_message, \
-    smart_house_link, javascript_link, python_link, autonomous_link
+    smart_house_link, javascript_link, python_link, autonomous_link, bonus_text
 from sqlalchemy import func
 from telebot import types
 import threading
@@ -148,13 +148,13 @@ def send_or_update_course_option(chat_id, message_id=None, update=False):
     markup.add(types.InlineKeyboardButton(text='Умный дом на Arduino С++',
                                           callback_data=json.dumps({'crs': Course.SMART_HOUSE})))
     markup.add(types.InlineKeyboardButton(text='Python Джедай', callback_data=json.dumps({'crs': Course.PYTHON})))
-    # markup.add(types.InlineKeyboardButton(text='JavaScript', callback_data=json.dumps({'crs': Course.JAVASCRIPT})))
+    markup.add(types.InlineKeyboardButton(text='Получи Бонус', callback_data=json.dumps({'crs': Course.BONUS})))
+
     if update:
         telegram_bot.delete_message(chat_id=chat_id, message_id=message_id)
         telegram_bot.send_message(chat_id=chat_id, text=course_choice_message,
                                   reply_markup=markup, parse_mode='Markdown')
-       # telegram_bot.edit_message_text(chat_id=chat_id, text=course_choice_message,
-       #                                reply_markup=markup, parse_mode='Markdown', message_id=message_id)
+
     else:
         telegram_bot.send_message(chat_id=chat_id, text=course_choice_message,
                                   reply_markup=markup, parse_mode='Markdown')
@@ -179,8 +179,8 @@ def request_course(course, chat_id, message_id=None, update=False,):
 
     markup.add(types.InlineKeyboardButton(text='Записаться на пробный урок',
                                           callback_data=json.dumps({'prb': course})))
-    markup.add(types.InlineKeyboardButton(text='Читать ТОП 12 языков программирования',
-                                          callback_data=json.dumps({'dwnl': True})))
+    markup.add(types.InlineKeyboardButton(text='Подпишись на Telegram канал',
+                                          url='https://t.me/robohousekb'))
     markup.add(types.InlineKeyboardButton(text='Автономное обучение в IT',
                                           callback_data=json.dumps({'aut': True})))
     markup.add(types.InlineKeyboardButton(text='🔙',
@@ -192,15 +192,13 @@ def request_course(course, chat_id, message_id=None, update=False,):
     elif course == Course.PYTHON:
         photo = open('app/static/py-pic.jpg', 'rb')
         message_text = python_message
-    elif course == Course.JAVASCRIPT:
-        message_text = javascript_message
+    elif course == Course.BONUS:
+        message_text = bonus_text
 
     if update:
         telegram_bot.delete_message(chat_id, message_id)
         telegram_bot.send_photo(caption=message_text, chat_id=chat_id,
                                 parse_mode='Markdown', reply_markup=markup, photo=photo)
-        #telegram_bot.edit_message_text(text=message_text, chat_id=chat_id, reply_markup=markup,
-        #                               message_id=message_id, disable_web_page_preview=True, parse_mode='Markdown')
     else:
         telegram_bot.send_photo(caption=message_text, chat_id=chat_id,
                                 parse_mode='Markdown', reply_markup=markup, photo=photo)
@@ -259,13 +257,17 @@ def check_state(message):
         request_course(Course.PYTHON, user.id)
     elif user.state == BotSate.JAVASCRIPT_CHOICE:
         request_course(Course.JAVASCRIPT, user.id)
+    elif user.state == BotSate.BONUS_CHOICE:
+        doc = open('app/static/top_programming_languages.pdf', 'rb')
+        telegram_bot.send_document(user.id, doc)
+
 
 
 @telegram_bot.callback_query_handler(func=lambda query: json.loads(query.data).get('strt') == True)
 def begin_registration(query):
     user = TelegramUser.query.get(query.message.chat.id)
     if user.state == BotSate.START:
-        user.state = BotSate.PHONE
+        user.state = BotSate.REGISTRATION_START
         db.session.commit()
         check_state(query.message)
 
@@ -287,6 +289,10 @@ def course_choice(query):
     elif course == Course.JAVASCRIPT:
         user.course = Course.JAVASCRIPT.name
         user.state = BotSate.JAVASCRIPT_CHOICE
+        db.session.commit()
+        request_course(course, user.id, query.message.message_id, update=True)
+    elif course == Course.BONUS:
+        user.state = BotSate.BONUS_CHOICE
         db.session.commit()
         request_course(course, user.id, query.message.message_id, update=True)
 
@@ -314,8 +320,9 @@ def course_link(query):
                                   parse_mode='Markdown')
 
 
+
 @telegram_bot.callback_query_handler(func=lambda query: json.loads(query.data).get('dwnl') is not None)
-def send_useful_file(query): # тут будет сообщение ссылка
+def send_useful_file(query):  # тут будет сообщение ссылка
     user = TelegramUser.query.get(query.message.chat.id)
     doc = open('app/static/top_programming_languages.pdf', 'rb')
     telegram_bot.send_document(user.id, doc)
