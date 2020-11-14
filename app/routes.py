@@ -269,7 +269,11 @@ def begin_registration(query):
     if user.state == BotSate.START:
         user.state = BotSate.REGISTRATION_START
         db.session.commit()
-        check_state(query.message)
+        request_registration_start(user.id)
+        threading.Thread(target=request_course_option,
+                         args=(user.id, True,),
+                         daemon=True).start()
+
 
 
 @telegram_bot.callback_query_handler(func=lambda query: json.loads(query.data).get('crs') is not None)
