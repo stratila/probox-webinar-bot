@@ -195,13 +195,28 @@ def request_course(course, chat_id, message_id=None, update=False,):
     elif course == Course.BONUS:
         message_text = bonus_text
 
-    if update:
-        telegram_bot.delete_message(chat_id, message_id)
-        telegram_bot.send_photo(caption=message_text, chat_id=chat_id,
-                                parse_mode='Markdown', reply_markup=markup, photo=photo)
+    if course != Course.BONUS:
+        if update:
+            telegram_bot.delete_message(chat_id, message_id)
+            telegram_bot.send_photo(caption=message_text, chat_id=chat_id,
+                                    parse_mode='Markdown', reply_markup=markup, photo=photo)
+        else:
+            telegram_bot.send_photo(caption=message_text, chat_id=chat_id,
+                                    parse_mode='Markdown', reply_markup=markup, photo=photo)
     else:
-        telegram_bot.send_photo(caption=message_text, chat_id=chat_id,
-                                parse_mode='Markdown', reply_markup=markup, photo=photo)
+        markup = types.InlineKeyboardMarkup()
+        markup.add(types.InlineKeyboardButton(text='🔙',
+                                              callback_data=json.dumps({'prb': 'back'})))
+        doc = open('app/static/top_programming_languages.pdf', 'rb')
+        if update:
+            telegram_bot.delete_message(chat_id, message_id)
+            telegram_bot.send_document(caption=message_text, chat_id=chat_id,
+                                       parse_mode='Markdown', reply_markup=markup, data=doc)
+        else:
+            telegram_bot.send_document(caption=message_text, chat_id=chat_id,
+                                       parse_mode='Markdown', reply_markup=markup, data=doc)
+
+
 
 
 @telegram_bot.message_handler(commands=['start'])
@@ -258,8 +273,7 @@ def check_state(message):
     elif user.state == BotSate.JAVASCRIPT_CHOICE:
         request_course(Course.JAVASCRIPT, user.id)
     elif user.state == BotSate.BONUS_CHOICE:
-        doc = open('app/static/top_programming_languages.pdf', 'rb')
-        telegram_bot.send_document(user.id, doc)
+        request_course(Course.BONUS, user.id)
 
 
 
